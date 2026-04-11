@@ -349,10 +349,79 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
 .success-msg { color: #4ade80; font-size: 0.9rem; }
 .hint { color: #64748b; font-size: 0.85rem; }
 
-@media (max-width: 640px) {
-  .navbar { padding: 14px 20px; }
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 110;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .navbar { padding: 14px 20px; position: relative; flex-wrap: wrap; }
+
+  .hamburger { display: flex; }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #1e293b;
+    border-top: 1px solid #334155;
+    padding: 12px 0;
+    gap: 4px;
+    animation: slideInDown 0.25s ease both;
+  }
+
+  .nav-links.nav-open { display: flex; }
+
+  .nav-links button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 20px;
+    border-radius: 0;
+    font-size: 1rem;
+  }
+
+  .nav-links button::after { display: none; }
+
+  .nav-links .btn-primary,
+  .nav-links .btn-outline {
+    margin: 8px 16px 4px;
+    width: calc(100% - 32px);
+    text-align: center;
+  }
+
   main { padding: 24px 16px; }
   .hero { padding: 48px 16px 40px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .subscribe-form { flex-direction: column; }
+  .admin-form-wrap { padding: 20px 16px; }
+  .modal { width: calc(100vw - 40px); padding: 28px 20px; }
+  .history-row { flex-direction: column; align-items: flex-start; }
+  .stats-bar { gap: 16px; }
+  .admin-tabs { flex-wrap: wrap; }
+  .acca-pick-row { flex-direction: column; align-items: flex-start; gap: 6px; }
 }
 
 /* ADMIN TABS */
@@ -747,7 +816,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
 .source-badge.free { background: #33415522; color: #64748b; }
 .source-badge.vip { background: #fbbf2422; color: #fbbf24; }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .history-row { flex-direction: column; align-items: flex-start; }
   .stats-bar { gap: 16px; }
 }
