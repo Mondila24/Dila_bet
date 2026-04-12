@@ -7,6 +7,7 @@ export default function Home({ setPage }) {
         <div className="hero-btns">
           <button className="btn-primary" onClick={() => setPage("free")}>View Free Picks</button>
           <button className="btn-outline" onClick={() => setPage("vip")}>Go VIP</button>
+          <button className="btn-results" onClick={() => setPage("history")}>📊 View Results</button>
         </div>
       </div>
 

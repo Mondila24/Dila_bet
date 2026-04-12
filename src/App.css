@@ -1330,3 +1330,35 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   flex-shrink: 0;
   cursor: pointer;
 }
+
+/* SINGLE PICK RESULT TAG */
+.pred-result-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* VIEW RESULTS BUTTON */
+.btn-results {
+  background: transparent;
+  color: #4ade80;
+  border: 2px solid #4ade80;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-results:hover {
+  background: rgba(74, 222, 128, 0.1);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-results:active { transform: translateY(0); }
