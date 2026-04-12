@@ -71,11 +71,20 @@ export function PredictionsProvider({ children }) {
     return updateDoc(doc(db, col, id), { result });
   };
 
+  const updateAccaPickResult = (type, accaId, pickIndex, result) => {
+    const col = type === "free" ? "free_accas" : "vip_accas";
+    const accas = type === "free" ? freeAccas : vipAccas;
+    const acca = accas.find((a) => a.id === accaId);
+    if (!acca) return;
+    const updatedPicks = acca.picks.map((p, i) => i === pickIndex ? { ...p, result } : p);
+    return updateDoc(doc(db, col, accaId), { picks: updatedPicks });
+  };
+
   return (
     <PredictionsContext.Provider value={{
       freePicks, vipPicks, freeAccas, vipAccas,
       addPick, deletePick, updateResult,
-      addAcca, deleteAcca, updateAccaResult
+      addAcca, deleteAcca, updateAccaResult, updateAccaPickResult
     }}>
       {children}
     </PredictionsContext.Provider>

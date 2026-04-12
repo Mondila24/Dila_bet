@@ -1301,3 +1301,32 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* ACCA PICK RESULT TAG */
+.acca-pick-bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.acca-pick-result-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.acca-pick-result-select {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}
