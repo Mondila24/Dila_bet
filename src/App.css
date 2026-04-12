@@ -1240,3 +1240,64 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   margin-left: auto;
   flex-shrink: 0;
 }
+
+/* SOCIAL BUTTONS */
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.social-btn.whatsapp {
+  background: #25d366;
+  color: #fff;
+}
+
+.social-btn.facebook {
+  background: #1877f2;
+  color: #fff;
+}
+
+.social-btn.whatsapp:hover {
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+  transform: translateY(-3px);
+  opacity: 1;
+}
+
+.social-btn.facebook:hover {
+  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.45);
+  transform: translateY(-3px);
+  opacity: 1;
+}
+
+/* Footer socials */
+.footer {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* VIP gate contact buttons */
+.vip-contact-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
