@@ -70,7 +70,7 @@ export default function VIPPicks({ onLoginClick }) {
                 isAdmin={isAdmin}
                 onDelete={(id) => deleteAcca("vip", id)}
                 onResult={(id, result) => updateAccaResult("vip", id, result)}
-                onPickResult={(id, idx, result) => updateAccaPickResult("vip", id, idx, result)}
+                onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("vip", id, idx, result, scoreline)}
               />
             ))}
           </div>
@@ -87,7 +87,7 @@ export default function VIPPicks({ onLoginClick }) {
               pick={pick}
               isAdmin={isAdmin}
               onDelete={(id) => deletePick("vip", id)}
-              onResult={(id, result) => updateResult("vip", id, result)}
+              onResult={(id, result, scoreline) => updateResult("vip", id, result, scoreline)}
             />
           ))}
         </div>

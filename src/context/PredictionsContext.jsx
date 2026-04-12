@@ -51,9 +51,11 @@ export function PredictionsProvider({ children }) {
     return deleteDoc(doc(db, col, id));
   };
 
-  const updateResult = (type, id, result) => {
+  const updateResult = (type, id, result, scoreline) => {
     const col = type === "free" ? "free_picks" : "vip_picks";
-    return updateDoc(doc(db, col, id), { result });
+    const update = { result };
+    if (scoreline !== undefined) update.scoreline = scoreline;
+    return updateDoc(doc(db, col, id), update);
   };
 
   const addAcca = (type, acca) => {
@@ -71,12 +73,17 @@ export function PredictionsProvider({ children }) {
     return updateDoc(doc(db, col, id), { result });
   };
 
-  const updateAccaPickResult = (type, accaId, pickIndex, result) => {
+  const updateAccaPickResult = (type, accaId, pickIndex, result, scoreline) => {
     const col = type === "free" ? "free_accas" : "vip_accas";
     const accas = type === "free" ? freeAccas : vipAccas;
     const acca = accas.find((a) => a.id === accaId);
     if (!acca) return;
-    const updatedPicks = acca.picks.map((p, i) => i === pickIndex ? { ...p, result } : p);
+    const updatedPicks = acca.picks.map((p, i) => {
+      if (i !== pickIndex) return p;
+      const updated = { ...p, result };
+      if (scoreline !== undefined) updated.scoreline = scoreline;
+      return updated;
+    });
     return updateDoc(doc(db, col, accaId), { picks: updatedPicks });
   };
 

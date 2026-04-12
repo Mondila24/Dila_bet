@@ -28,7 +28,7 @@ export default function FreePicks() {
                 isAdmin={isAdmin}
                 onDelete={(id) => deleteAcca("free", id)}
                 onResult={(id, result) => updateAccaResult("free", id, result)}
-                onPickResult={(id, idx, result) => updateAccaPickResult("free", id, idx, result)}
+                onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("free", id, idx, result, scoreline)}
               />
             ))}
           </div>
@@ -45,7 +45,7 @@ export default function FreePicks() {
               pick={pick}
               isAdmin={isAdmin}
               onDelete={(id) => deletePick("free", id)}
-              onResult={(id, result) => updateResult("free", id, result)}
+              onResult={(id, result, scoreline) => updateResult("free", id, result, scoreline)}
             />
           ))}
         </div>

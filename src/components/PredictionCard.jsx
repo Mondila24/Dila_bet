@@ -33,6 +33,11 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
       <div className="pred-footer">
         <span className="pred-tip">Tip: <strong>{pick.tip}</strong></span>
         <span className="pred-odds">Odds: <strong>{pick.odds}</strong></span>
+      </div>
+      <div className="pred-tags-row">
+        {pick.scoreline && (
+          <span className="pred-scoreline-tag">⚽ {pick.scoreline}</span>
+        )}
         <span className="pred-result-tag" style={{
           color: rs.color,
           background: rs.bg,
@@ -43,7 +48,13 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
       </div>
       {isAdmin && (
         <div className="pred-admin-actions">
-          <select value={pick.result} onChange={(e) => onResult(pick.id, e.target.value)}>
+          <input
+            placeholder="Scoreline e.g. 2-1"
+            value={pick.scoreline || ""}
+            onChange={(e) => onResult(pick.id, pick.result, e.target.value)}
+            style={{ flex: 1, background: "#0f172a", border: "1px solid #334155", color: "#e2e8f0", padding: "6px 10px", borderRadius: "8px", fontSize: "0.85rem" }}
+          />
+          <select value={pick.result} onChange={(e) => onResult(pick.id, e.target.value, pick.scoreline)}>
             <option value="pending">Pending</option>
             <option value="won">Won</option>
             <option value="lost">Lost</option>

@@ -6,8 +6,8 @@ import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { teamsBySport, leaguesBySport, countriesBySport } from "../data/teams";
 import AutocompleteInput from "../components/AutocompleteInput";
 
-const empty = { match: "", league: "", country: "", sport: "football", time: "", tip: "", odds: "" };
-const emptyAccaPick = { match: "", tip: "", league: "", country: "", time: "", sport: "football" };
+const empty = { match: "", league: "", country: "", sport: "football", time: "", tip: "", odds: "", scoreline: "" };
+const emptyAccaPick = { match: "", tip: "", league: "", country: "", time: "", sport: "football", scoreline: "", odds: "" };
 const emptyAcca = { picks: [{ ...emptyAccaPick }], totalOdds: "", sportybetCode: "", footballComCode: "", result: "pending" };
 
 function MatchInput({ value, sport, onChange }) {
@@ -204,6 +204,10 @@ export default function Admin({ setPage }) {
                   <label>Odds</label>
                   <input name="odds" placeholder="e.g. 1.85" value={form.odds} onChange={handleChange} />
                 </div>
+                <div className="form-row">
+                  <label>Scoreline (optional)</label>
+                  <input name="scoreline" placeholder="e.g. 2-1" value={form.scoreline} onChange={handleChange} />
+                </div>
                 <button className="btn-primary" type="submit">Add Pick</button>
                 {success && <p className="success-msg">{success}</p>}
               </form>
@@ -269,6 +273,22 @@ export default function Admin({ setPage }) {
                         value={pick.tip}
                         onChange={(e) => handleAccaPickChange(i, "tip", e.target.value)}
                         required
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Scoreline (optional)</label>
+                      <input
+                        placeholder="e.g. 2-1"
+                        value={pick.scoreline || ""}
+                        onChange={(e) => handleAccaPickChange(i, "scoreline", e.target.value)}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Odds</label>
+                      <input
+                        placeholder="e.g. 1.85"
+                        value={pick.odds || ""}
+                        onChange={(e) => handleAccaPickChange(i, "odds", e.target.value)}
                       />
                     </div>
                   </div>

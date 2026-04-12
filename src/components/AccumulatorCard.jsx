@@ -60,6 +60,12 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
                   </span>
                   <div className="acca-pick-bottom">
                     <span className="acca-pick-tip">{pick.tip}</span>
+                    {pick.odds && (
+                      <span className="acca-pick-odds-tag">@ {pick.odds}</span>
+                    )}
+                    {pick.scoreline && (
+                      <span className="pred-scoreline-tag">⚽ {pick.scoreline}</span>
+                    )}
                     <span className="acca-pick-result-tag" style={{
                       color: ps.color,
                       background: ps.bg,
@@ -71,15 +77,24 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
                 </div>
               </div>
               {isAdmin && (
-                <select
-                  className="acca-pick-result-select"
-                  value={pickResult}
-                  onChange={(e) => onPickResult && onPickResult(acca.id, i, e.target.value)}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="won">Won</option>
-                  <option value="lost">Lost</option>
-                </select>
+                <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                  <input
+                    placeholder="Scoreline e.g. 2-1"
+                    value={pick.scoreline || ""}
+                    onChange={(e) => onPickResult && onPickResult(acca.id, i, pick.result || "pending", e.target.value)}
+                    className="acca-pick-result-select"
+                    style={{ flex: 1, minWidth: "100px" }}
+                  />
+                  <select
+                    className="acca-pick-result-select"
+                    value={pickResult}
+                    onChange={(e) => onPickResult && onPickResult(acca.id, i, e.target.value, pick.scoreline)}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </div>
               )}
             </div>
           );
