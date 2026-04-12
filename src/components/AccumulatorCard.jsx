@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const SPORT_ICONS = {
   football: "⚽", basketball: "🏀", tennis: "🎾", rugby: "🏉",
@@ -13,10 +13,14 @@ const RESULT_STYLES = {
 
 export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult, isAdmin }) {
   const [copied, setCopied] = useState("");
-  // local state for per-pick admin edits
   const [pickEdits, setPickEdits] = useState(() =>
     (acca.picks || []).map((p) => ({ result: p.result || "pending", scoreline: p.scoreline || "" }))
   );
+
+  // Sync local edits when Firestore data updates
+  useEffect(() => {
+    setPickEdits((acca.picks || []).map((p) => ({ result: p.result || "pending", scoreline: p.scoreline || "" })));
+  }, [acca]);
 
   const handleCopy = (platform, code) => {
     navigator.clipboard.writeText(code);

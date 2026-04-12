@@ -61,8 +61,8 @@ export default function VIPPicks({ onLoginClick }) {
 
       {vipAccas.length > 0 && (
         <div className="section">
-          <h3 className="section-title">Today's Accumulators</h3>
-          <div className="cards-grid">
+          <h3 className="section-title">Accumulators ({vipAccas.length})</h3>
+          <div className="acca-list">
             {vipAccas.map((acca) => (
               <AccumulatorCard
                 key={acca.id}

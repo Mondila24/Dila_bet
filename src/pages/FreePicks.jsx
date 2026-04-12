@@ -19,8 +19,8 @@ export default function FreePicks() {
 
       {freeAccas.length > 0 && (
         <div className="section">
-          <h3 className="section-title">Today's Accumulators</h3>
-          <div className="cards-grid">
+          <h3 className="section-title">Accumulators ({freeAccas.length})</h3>
+          <div className="acca-list">
             {freeAccas.map((acca) => (
               <AccumulatorCard
                 key={acca.id}
