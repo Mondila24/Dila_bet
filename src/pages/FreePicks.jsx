@@ -5,7 +5,7 @@ import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function FreePicks() {
-  const { freePicks, freeAccas, deletePick, updateResult, deleteAcca } = usePredictions();
+  const { freePicks, freeAccas, deletePick, updateResult, deleteAcca, updateAccaResult } = usePredictions();
   const { isAdmin } = useAuth();
 
   return (
@@ -27,6 +27,7 @@ export default function FreePicks() {
                 acca={acca}
                 isAdmin={isAdmin}
                 onDelete={(id) => deleteAcca("free", id)}
+                onResult={(id, result) => updateAccaResult("free", id, result)}
               />
             ))}
           </div>

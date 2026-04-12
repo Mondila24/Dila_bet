@@ -58,7 +58,7 @@ export function PredictionsProvider({ children }) {
 
   const addAcca = (type, acca) => {
     const col = type === "free" ? "free_accas" : "vip_accas";
-    return addDoc(collection(db, col), { ...acca, createdAt: Date.now() });
+    return addDoc(collection(db, col), { ...acca, result: acca.result || "pending", createdAt: Date.now() });
   };
 
   const deleteAcca = (type, id) => {
@@ -66,11 +66,16 @@ export function PredictionsProvider({ children }) {
     return deleteDoc(doc(db, col, id));
   };
 
+  const updateAccaResult = (type, id, result) => {
+    const col = type === "free" ? "free_accas" : "vip_accas";
+    return updateDoc(doc(db, col, id), { result });
+  };
+
   return (
     <PredictionsContext.Provider value={{
       freePicks, vipPicks, freeAccas, vipAccas,
       addPick, deletePick, updateResult,
-      addAcca, deleteAcca
+      addAcca, deleteAcca, updateAccaResult
     }}>
       {children}
     </PredictionsContext.Provider>

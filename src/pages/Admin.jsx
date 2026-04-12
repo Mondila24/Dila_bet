@@ -3,16 +3,16 @@ import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { teamsBySport, leaguesBySport } from "../data/teams";
+import { teamsBySport, leaguesBySport, countriesBySport } from "../data/teams";
 import AutocompleteInput from "../components/AutocompleteInput";
 
-const empty = { match: "", league: "", sport: "football", time: "", tip: "", odds: "" };
-const emptyAcca = { picks: [{ match: "", tip: "" }], totalOdds: "", sportybetCode: "", footballComCode: "" };
+const empty = { match: "", league: "", country: "", sport: "football", time: "", tip: "", odds: "" };
+const emptyAccaPick = { match: "", tip: "", league: "", country: "", time: "", sport: "football" };
+const emptyAcca = { picks: [{ ...emptyAccaPick }], totalOdds: "", sportybetCode: "", footballComCode: "", result: "pending" };
 
 function MatchInput({ value, sport, onChange }) {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [teamInput, setTeamInput] = useState("");
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -33,7 +33,6 @@ function MatchInput({ value, sport, onChange }) {
       const filtered = teams.filter((t) => t.toLowerCase().includes(current) && !val.includes(t));
       setSuggestions(filtered.slice(0, 6));
       setShowSuggestions(filtered.length > 0);
-      setTeamInput(current);
     } else {
       setShowSuggestions(false);
     }
@@ -52,7 +51,6 @@ function MatchInput({ value, sport, onChange }) {
         placeholder="e.g. Arsenal vs Chelsea"
         value={value}
         onChange={handleInput}
-        onFocus={() => teamInput.length >= 2 && setShowSuggestions(suggestions.length > 0)}
         autoComplete="off"
         required
       />
@@ -64,6 +62,18 @@ function MatchInput({ value, sport, onChange }) {
     </div>
   );
 }
+
+const SPORTS = [
+  { value: "football", label: "⚽ Football" },
+  { value: "basketball", label: "🏀 Basketball" },
+  { value: "tennis", label: "🎾 Tennis" },
+  { value: "rugby", label: "🏉 Rugby" },
+  { value: "baseball", label: "⚾ Baseball" },
+  { value: "hockey", label: "🏒 Hockey" },
+  { value: "boxing", label: "🥊 Boxing" },
+  { value: "cricket", label: "🏏 Cricket" },
+  { value: "other", label: "🏅 Other" },
+];
 
 export default function Admin({ setPage }) {
   const { addPick, addAcca } = usePredictions();
@@ -105,7 +115,7 @@ export default function Admin({ setPage }) {
     setAccaForm({ ...accaForm, picks: updated });
   };
 
-  const addAccaPick = () => setAccaForm({ ...accaForm, picks: [...accaForm.picks, { match: "", tip: "" }] });
+  const addAccaPick = () => setAccaForm({ ...accaForm, picks: [...accaForm.picks, { ...emptyAccaPick }] });
 
   const removeAccaPick = (index) => {
     if (accaForm.picks.length === 1) return;
@@ -157,15 +167,7 @@ export default function Admin({ setPage }) {
                 <div className="form-row">
                   <label>Sport</label>
                   <select name="sport" value={form.sport} onChange={handleChange}>
-                    <option value="football">⚽ Football</option>
-                    <option value="basketball">🏀 Basketball</option>
-                    <option value="tennis">🎾 Tennis</option>
-                    <option value="rugby">🏉 Rugby</option>
-                    <option value="baseball">⚾ Baseball</option>
-                    <option value="hockey">🏒 Hockey</option>
-                    <option value="boxing">🥊 Boxing</option>
-                    <option value="cricket">🏏 Cricket</option>
-                    <option value="other">🏅 Other</option>
+                    {SPORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="form-row">
@@ -182,7 +184,16 @@ export default function Admin({ setPage }) {
                   />
                 </div>
                 <div className="form-row">
-                  <label>Time</label>
+                  <label>Country</label>
+                  <AutocompleteInput
+                    value={form.country}
+                    onChange={(val) => setForm({ ...form, country: val })}
+                    suggestions={countriesBySport[form.sport] || []}
+                    placeholder="e.g. England"
+                  />
+                </div>
+                <div className="form-row">
+                  <label>Kickoff Time</label>
                   <input name="time" placeholder="e.g. 20:00" value={form.time} onChange={handleChange} />
                 </div>
                 <div className="form-row">
@@ -211,17 +222,55 @@ export default function Admin({ setPage }) {
                         <button type="button" className="btn-delete" style={{ padding: "4px 10px", fontSize: "0.75rem" }} onClick={() => removeAccaPick(i)}>Remove</button>
                       )}
                     </div>
-                    <MatchInput
-                      value={pick.match}
-                      sport="football"
-                      onChange={(val) => handleAccaPickChange(i, "match", val)}
-                    />
-                    <input
-                      placeholder="Tip (e.g. Over 2.5)"
-                      value={pick.tip}
-                      onChange={(e) => handleAccaPickChange(i, "tip", e.target.value)}
-                      required
-                    />
+                    <div className="form-row">
+                      <label>Sport</label>
+                      <select value={pick.sport} onChange={(e) => handleAccaPickChange(i, "sport", e.target.value)}>
+                        {SPORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-row">
+                      <label>Match</label>
+                      <MatchInput
+                        value={pick.match}
+                        sport={pick.sport}
+                        onChange={(val) => handleAccaPickChange(i, "match", val)}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>League</label>
+                      <AutocompleteInput
+                        value={pick.league}
+                        onChange={(val) => handleAccaPickChange(i, "league", val)}
+                        suggestions={leaguesBySport[pick.sport] || []}
+                        placeholder="e.g. Premier League"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Country</label>
+                      <AutocompleteInput
+                        value={pick.country}
+                        onChange={(val) => handleAccaPickChange(i, "country", val)}
+                        suggestions={countriesBySport[pick.sport] || []}
+                        placeholder="e.g. England"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Kickoff Time</label>
+                      <input
+                        placeholder="e.g. 20:00"
+                        value={pick.time}
+                        onChange={(e) => handleAccaPickChange(i, "time", e.target.value)}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Tip</label>
+                      <input
+                        placeholder="Tip (e.g. Over 2.5)"
+                        value={pick.tip}
+                        onChange={(e) => handleAccaPickChange(i, "tip", e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
                 ))}
 
@@ -230,6 +279,14 @@ export default function Admin({ setPage }) {
                 <div className="form-row">
                   <label>Total Odds</label>
                   <input placeholder="e.g. 6.45" value={accaForm.totalOdds} onChange={(e) => setAccaForm({ ...accaForm, totalOdds: e.target.value })} />
+                </div>
+                <div className="form-row">
+                  <label>Result</label>
+                  <select value={accaForm.result} onChange={(e) => setAccaForm({ ...accaForm, result: e.target.value })}>
+                    <option value="pending">Pending</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                  </select>
                 </div>
                 <div className="form-row">
                   <label>Sportybet Code</label>

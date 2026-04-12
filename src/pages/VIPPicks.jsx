@@ -5,7 +5,7 @@ import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function VIPPicks({ onLoginClick }) {
-  const { vipPicks, vipAccas, deletePick, updateResult, deleteAcca } = usePredictions();
+  const { vipPicks, vipAccas, deletePick, updateResult, deleteAcca, updateAccaResult } = usePredictions();
   const { user, isVip, isAdmin } = useAuth();
 
   if (!user) {
@@ -59,6 +59,7 @@ export default function VIPPicks({ onLoginClick }) {
                 acca={acca}
                 isAdmin={isAdmin}
                 onDelete={(id) => deleteAcca("vip", id)}
+                onResult={(id, result) => updateAccaResult("vip", id, result)}
               />
             ))}
           </div>

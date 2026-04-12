@@ -10,7 +10,7 @@ body {
     url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920&q=80&auto=format&fit=crop');
   background-size: cover;
   background-position: center top;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 #root {
@@ -383,17 +383,23 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   .hamburger { display: flex; }
 
   .nav-links {
-    display: none;
-    flex-direction: column;
+    display: flex;
     width: 100%;
     background: #1e293b;
     border-top: 1px solid #334155;
-    padding: 12px 0;
     gap: 4px;
-    animation: slideInDown 0.25s ease both;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease;
   }
 
-  .nav-links.nav-open { display: flex; }
+  .nav-links.nav-open {
+    max-height: 500px;
+    opacity: 1;
+    padding: 12px 0;
+  }
 
   .nav-links button {
     width: 100%;
@@ -1128,4 +1134,97 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
 .subscribe-form input:focus {
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* PREDICTION CARD - COUNTRY ROW */
+.pred-meta-row {
+  margin-bottom: 10px;
+}
+.pred-country {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ACCUMULATOR CARD - PICK INFO */
+.acca-pick-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.acca-pick-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.acca-pick-sport {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.acca-pick-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.acca-pick-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.acca-result-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.acca-settled {
+  opacity: 0.85;
+}
+
+/* ACCUMULATOR HISTORY */
+.acca-history-row {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acca-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.acca-history-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid #334155;
+}
+
+.acca-history-pick {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.acca-history-pick .acca-pick-tip {
+  margin-left: auto;
+  flex-shrink: 0;
 }

@@ -23,6 +23,9 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
         <span className="pred-time">🕐 {pick.time}</span>
       </div>
       <h3 className="pred-match">{pick.match}</h3>
+      <div className="pred-meta-row">
+        {pick.country && <span className="pred-country">🌍 {pick.country}</span>}
+      </div>
       <div className="pred-footer">
         <span className="pred-tip">Tip: <strong>{pick.tip}</strong></span>
         <span className="pred-odds">Odds: <strong>{pick.odds}</strong></span>
