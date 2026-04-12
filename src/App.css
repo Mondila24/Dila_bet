@@ -1446,3 +1446,12 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   color: #38bdf8;
   white-space: nowrap;
 }
+
+/* ACCA PICK ADMIN ROW */
+.acca-pick-admin-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
