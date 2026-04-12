@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const SPORT_ICONS = {
   football: "⚽",
   basketball: "🏀",
@@ -19,6 +21,8 @@ const RESULT_STYLES = {
 export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
   const sportIcon = SPORT_ICONS[pick.sport] || SPORT_ICONS.other;
   const rs = RESULT_STYLES[pick.result] || RESULT_STYLES.pending;
+  const [editResult, setEditResult] = useState(pick.result || "pending");
+  const [editScore, setEditScore] = useState(pick.scoreline || "");
 
   return (
     <div className="pred-card">
@@ -32,12 +36,13 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
       </div>
       <div className="pred-footer">
         <span className="pred-tip">Tip: <strong>{pick.tip}</strong></span>
-        <span className="pred-odds">Odds: <strong>{pick.odds}</strong></span>
       </div>
       <div className="pred-tags-row">
-        {pick.scoreline && (
-          <span className="pred-scoreline-tag">⚽ {pick.scoreline}</span>
-        )}
+        <span className="acca-pick-odds-tag">@ {pick.odds || "—"}</span>
+        {pick.scoreline
+          ? <span className="pred-scoreline-tag">⚽ {pick.scoreline}</span>
+          : <span className="pred-scoreline-tag" style={{ opacity: 0.4 }}>⚽ —</span>
+        }
         <span className="pred-result-tag" style={{
           color: rs.color,
           background: rs.bg,
@@ -50,15 +55,16 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
         <div className="pred-admin-actions">
           <input
             placeholder="Scoreline e.g. 2-1"
-            value={pick.scoreline || ""}
-            onChange={(e) => onResult(pick.id, pick.result, e.target.value)}
+            value={editScore}
+            onChange={(e) => setEditScore(e.target.value)}
             style={{ flex: 1, background: "#0f172a", border: "1px solid #334155", color: "#e2e8f0", padding: "6px 10px", borderRadius: "8px", fontSize: "0.85rem" }}
           />
-          <select value={pick.result} onChange={(e) => onResult(pick.id, e.target.value, pick.scoreline)}>
+          <select value={editResult} onChange={(e) => setEditResult(e.target.value)}>
             <option value="pending">Pending</option>
             <option value="won">Won</option>
             <option value="lost">Lost</option>
           </select>
+          <button className="copy-btn" onClick={() => onResult(pick.id, editResult, editScore)}>Save</button>
           <button className="btn-delete" onClick={() => onDelete(pick.id)}>Delete</button>
         </div>
       )}
