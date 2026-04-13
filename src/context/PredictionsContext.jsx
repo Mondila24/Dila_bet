@@ -84,7 +84,14 @@ export function PredictionsProvider({ children }) {
       if (scoreline !== undefined) updated.scoreline = scoreline;
       return updated;
     });
-    return updateDoc(doc(db, col, accaId), { picks: updatedPicks });
+
+    // Auto-calculate overall result:
+    // all won → won, any lost → lost, otherwise pending
+    const allWon = updatedPicks.every((p) => p.result === "won");
+    const anyLost = updatedPicks.some((p) => p.result === "lost");
+    const overallResult = allWon ? "won" : anyLost ? "lost" : "pending";
+
+    return updateDoc(doc(db, col, accaId), { picks: updatedPicks, result: overallResult });
   };
 
   return (
