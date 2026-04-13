@@ -379,6 +379,8 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; overflow-x: hidden
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+
+  /* NAVBAR */
   .navbar {
     padding: 14px 20px;
     position: relative;
@@ -421,7 +423,6 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; overflow-x: hidden
 
   .nav-links button::after { display: none; }
 
-  /* Login / Logout buttons — full width, centered, with margin */
   .nav-links .btn-primary,
   .nav-links .btn-outline {
     margin: 10px 16px 4px;
@@ -431,16 +432,104 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; overflow-x: hidden
     padding: 12px 16px;
   }
 
-  main { padding: 24px 16px; }
-  .hero { padding: 48px 16px 40px; }
-  .cards-grid { grid-template-columns: 1fr; }
-  .subscribe-form { flex-direction: column; }
-  .admin-form-wrap { padding: 20px 16px; }
-  .modal { width: calc(100vw - 40px); padding: 28px 20px; }
-  .history-row { flex-direction: column; align-items: flex-start; }
-  .stats-bar { gap: 16px; }
-  .admin-tabs { flex-wrap: wrap; }
+  /* LAYOUT */
+  main { padding: 20px 12px; }
+  .hero { padding: 40px 12px 32px; }
+  .hero-btns { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-btns button, .hero-btns .btn-results { width: 100%; }
+
+  /* CARDS */
+  .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  /* PREDICTION CARD */
+  .pred-card { padding: 16px; }
+  .pred-header { flex-wrap: wrap; gap: 4px; }
+  .pred-league { font-size: 0.72rem; }
+  .pred-time { font-size: 0.75rem; }
+  .pred-match { font-size: 0.98rem; margin-bottom: 10px; }
+  .pred-footer { flex-wrap: wrap; gap: 8px; }
+  .pred-tags-row { flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pred-result-tag, .pred-scoreline-tag, .acca-pick-odds-tag { font-size: 0.7rem; padding: 2px 8px; }
+
+  /* ADMIN ACTIONS ON CARD */
+  .pred-admin-actions { flex-wrap: wrap; gap: 8px; }
+  .pred-admin-actions input { min-width: 0; width: 100%; }
+  .pred-admin-actions select { flex: 1; min-width: 100px; }
+
+  /* ACCUMULATOR CARD */
+  .acca-card { padding: 16px; }
+  .acca-header { flex-wrap: wrap; gap: 8px; }
+  .acca-label { font-size: 0.85rem; }
+  .acca-odds { font-size: 0.82rem; }
   .acca-pick-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .acca-pick-info { width: 100%; }
+  .acca-pick-match { font-size: 0.9rem; }
+  .acca-pick-meta { font-size: 0.72rem; }
+  .acca-pick-bottom { flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .acca-pick-admin-row { flex-wrap: wrap; gap: 6px; }
+  .acca-pick-admin-row input { width: 100%; min-width: 0; }
+  .acca-pick-admin-row select { flex: 1; }
+  .acca-code-row { flex-wrap: wrap; gap: 8px; }
+  .code-value { font-size: 0.85rem; word-break: break-all; }
+  .platform-name { font-size: 0.72rem; }
+  .copy-btn { font-size: 0.75rem; padding: 5px 10px; }
+
+  /* HISTORY */
+  .history-row { flex-direction: column; align-items: flex-start; padding: 12px 14px; }
+  .history-left { width: 100%; }
+  .history-match { font-size: 0.92rem; }
+  .history-meta { font-size: 0.72rem; }
+  .history-tags { flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .history-tip-tag { font-size: 0.72rem; padding: 2px 8px; }
+  .hist-result-tag, .hist-odds-tag, .hist-scoreline-tag { font-size: 0.7rem; padding: 2px 8px; }
+  .acca-history-header { flex-wrap: wrap; gap: 8px; }
+  .acca-history-pick { flex-wrap: wrap; gap: 6px; padding: 8px; }
+  .acca-history-picks { gap: 6px; }
+
+  /* SUMMARY BAR */
+  .summary-bar { flex-direction: column; gap: 14px; padding: 16px; }
+  .summary-divider { display: none; }
+  .summary-section { min-width: 0; }
+  .summary-counts { gap: 10px; }
+
+  /* STATS BAR */
+  .stats-bar { gap: 10px; padding: 14px 16px; flex-wrap: wrap; }
+  .stat-value { font-size: 1.3rem; }
+  .stat-label { font-size: 0.68rem; }
+
+  /* FILTERS */
+  .history-filters { flex-wrap: wrap; gap: 8px; }
+  .filter-group { flex-wrap: wrap; }
+  .filter-group button { padding: 6px 12px; font-size: 0.82rem; }
+
+  /* ADMIN TABS */
+  .admin-tabs { flex-wrap: wrap; gap: 6px; }
+  .admin-tabs button { font-size: 0.85rem; padding: 8px 14px; }
+
+  /* ADMIN FORM */
+  .admin-form-wrap { padding: 16px 12px; }
+  .form-row input, .form-row select { font-size: 0.9rem; padding: 9px 12px; }
+  .acca-pick-form { padding: 12px; }
+
+  /* MODAL */
+  .modal { width: calc(100vw - 32px); padding: 24px 16px; }
+
+  /* VIP GATE */
+  .vip-gate { padding: 32px 20px; margin: 40px auto; }
+  .vip-contact-btns { flex-direction: column; }
+  .vip-contact-btns .social-btn { justify-content: center; }
+
+  /* FOOTER */
+  .footer { padding: 20px 16px; }
+  .footer-socials { gap: 10px; }
+  .social-btn { padding: 9px 16px; font-size: 0.85rem; }
+
+  /* SUBSCRIBE FORM */
+  .subscribe-form { flex-direction: column; }
+
+  /* FEATURES */
+  .features { grid-template-columns: 1fr; gap: 14px; margin-top: 40px; }
+  .feature-card { padding: 20px; }
 }
 
 /* ADMIN TABS */
@@ -836,8 +925,8 @@ main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; overflow-x: hidden
 .source-badge.vip { background: #fbbf2422; color: #fbbf24; }
 
 @media (max-width: 768px) {
-  .history-row { flex-direction: column; align-items: flex-start; }
-  .stats-bar { gap: 16px; }
+  .summary-divider { display: none; }
+  .summary-bar { gap: 16px; }
 }
 
 /* ============================================
