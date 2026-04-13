@@ -13,6 +13,16 @@ const RESULT_STYLES = {
   pending: { label: "⏳ PENDING", color: "#fbbf24", bg: "rgba(251,191,36,0.1)",  border: "rgba(251,191,36,0.25)" },
 };
 
+// Derive overall acca result from picks if the top-level result is missing
+function deriveAccaResult(acca) {
+  if (acca.result && acca.result !== "pending") return acca.result;
+  const picks = acca.picks || [];
+  if (picks.length === 0) return "pending";
+  if (picks.every((p) => p.result === "won")) return "won";
+  if (picks.some((p) => p.result === "lost")) return "lost";
+  return "pending";
+}
+
 function ResultTag({ result }) {
   const rs = RESULT_STYLES[result] || RESULT_STYLES.pending;
   return (
@@ -30,29 +40,54 @@ function ScorelineTag({ scoreline }) {
   return <span className="hist-scoreline-tag">⚽ {scoreline}</span>;
 }
 
-function SummaryBar({ picks, accas }) {
-  const wonPicks = picks.filter((p) => p.result === "won").length;
-  const lostPicks = picks.filter((p) => p.result === "lost").length;
-  const wonAccas = accas.filter((a) => a.result === "won").length;
-  const lostAccas = accas.filter((a) => a.result === "lost").length;
-  const totalSettled = wonPicks + lostPicks;
-  const winRate = totalSettled > 0 ? Math.round((wonPicks / totalSettled) * 100) : 0;
+function SummaryBar({ freePicks, vipPicks, freeAccas, vipAccas }) {
+  // Singles
+  const freeWonP  = freePicks.filter((p) => p.result === "won").length;
+  const freeLostP = freePicks.filter((p) => p.result === "lost").length;
+  const vipWonP   = vipPicks.filter((p) => p.result === "won").length;
+  const vipLostP  = vipPicks.filter((p) => p.result === "lost").length;
+
+  // Accas — use derived result
+  const freeWonA  = freeAccas.filter((a) => deriveAccaResult(a) === "won").length;
+  const freeLostA = freeAccas.filter((a) => deriveAccaResult(a) === "lost").length;
+  const vipWonA   = vipAccas.filter((a) => deriveAccaResult(a) === "won").length;
+  const vipLostA  = vipAccas.filter((a) => deriveAccaResult(a) === "lost").length;
+
+  const totalWon  = freeWonP + vipWonP;
+  const totalLost = freeLostP + vipLostP;
+  const winRate   = (totalWon + totalLost) > 0 ? Math.round((totalWon / (totalWon + totalLost)) * 100) : 0;
 
   return (
     <div className="summary-bar">
       <div className="summary-section">
-        <div className="summary-label">Single Picks</div>
+        <div className="summary-label">Free Singles</div>
         <div className="summary-counts">
-          <span className="summary-won">✓ {wonPicks} Won</span>
-          <span className="summary-lost">✗ {lostPicks} Lost</span>
+          <span className="summary-won">✓ {freeWonP} Won</span>
+          <span className="summary-lost">✗ {freeLostP} Lost</span>
         </div>
       </div>
       <div className="summary-divider" />
       <div className="summary-section">
-        <div className="summary-label">Accumulators</div>
+        <div className="summary-label">VIP Singles</div>
         <div className="summary-counts">
-          <span className="summary-won">✓ {wonAccas} Won</span>
-          <span className="summary-lost">✗ {lostAccas} Lost</span>
+          <span className="summary-won">✓ {vipWonP} Won</span>
+          <span className="summary-lost">✗ {vipLostP} Lost</span>
+        </div>
+      </div>
+      <div className="summary-divider" />
+      <div className="summary-section">
+        <div className="summary-label">Free Accas</div>
+        <div className="summary-counts">
+          <span className="summary-won">✓ {freeWonA} Won</span>
+          <span className="summary-lost">✗ {freeLostA} Lost</span>
+        </div>
+      </div>
+      <div className="summary-divider" />
+      <div className="summary-section">
+        <div className="summary-label">VIP Accas</div>
+        <div className="summary-counts">
+          <span className="summary-won">✓ {vipWonA} Won</span>
+          <span className="summary-lost">✗ {vipLostA} Lost</span>
         </div>
       </div>
       <div className="summary-divider" />
@@ -74,14 +109,18 @@ export default function History() {
   const [source, setSource] = useState("all");
   const [viewTab, setViewTab] = useState("singles");
 
-  // Everyone sees settled VIP picks/accas — only pending VIP is hidden from non-VIP
+  // Everyone sees settled VIP — only pending VIP hidden from non-VIP
   const visibleVipPicks = (isVip || isAdmin)
     ? vipPicks
     : vipPicks.filter((p) => p.result && p.result !== "pending");
 
+  // Free users can see ALL vipAccas that are settled (derived result won/lost)
   const visibleVipAccas = (isVip || isAdmin)
     ? vipAccas
-    : vipAccas.filter((a) => a.result && a.result !== "pending");
+    : vipAccas.filter((a) => {
+        const r = deriveAccaResult(a);
+        return r === "won" || r === "lost";
+      });
 
   const allPicks = [
     ...freePicks.map((p) => ({ ...p, source: "free" })),
@@ -99,14 +138,21 @@ export default function History() {
     return (filter === "all" || r === filter) && (source === "all" || p.source === source);
   });
 
+  // Use derived result for acca filtering
   const filteredAccas = allAccas.filter((a) => {
-    const r = a.result || "pending";
+    const r = deriveAccaResult(a);
     if (r === "pending") return false;
     return (filter === "all" || r === filter) && (source === "all" || a.source === source);
   });
 
   const sortedPicks = [...filteredPicks].sort((a, b) => b.createdAt - a.createdAt);
   const sortedAccas = [...filteredAccas].sort((a, b) => b.createdAt - a.createdAt);
+
+  // Pass settled-only data to summary bar
+  const settledFreePicks = freePicks.filter((p) => p.result === "won" || p.result === "lost");
+  const settledVipPicks  = visibleVipPicks.filter((p) => p.result === "won" || p.result === "lost");
+  const settledFreeAccas = freeAccas.filter((a) => { const r = deriveAccaResult(a); return r === "won" || r === "lost"; });
+  const settledVipAccas  = visibleVipAccas.filter((a) => { const r = deriveAccaResult(a); return r === "won" || r === "lost"; });
 
   return (
     <div className="page">
@@ -115,7 +161,12 @@ export default function History() {
         <p>Settled predictions — won and lost. Free and VIP results visible to everyone.</p>
       </div>
 
-      <SummaryBar picks={allPicks} accas={allAccas} />
+      <SummaryBar
+        freePicks={settledFreePicks}
+        vipPicks={settledVipPicks}
+        freeAccas={settledFreeAccas}
+        vipAccas={settledVipAccas}
+      />
 
       <div className="admin-tabs" style={{ marginBottom: "20px" }}>
         <button className={viewTab === "singles" ? "active" : ""} onClick={() => setViewTab("singles")}>
@@ -142,11 +193,11 @@ export default function History() {
       {/* Singles */}
       {viewTab === "singles" && (
         sortedPicks.length === 0 ? (
-          <p className="empty">No picks match this filter.</p>
+          <p className="empty">No settled single picks yet.</p>
         ) : (
           <div className="history-list">
             {sortedPicks.map((pick) => (
-              <div key={pick.id + pick.source} className={`history-row ${pick.result || "pending"}`}>
+              <div key={pick.id + pick.source} className={`history-row ${pick.result}`}>
                 <div className="history-left">
                   <span className="history-sport">{SPORT_ICONS[pick.sport] || "🏅"}</span>
                   <div>
@@ -160,7 +211,7 @@ export default function History() {
                       <span className="history-tip-tag">{pick.tip}</span>
                       <OddsTag odds={pick.odds} />
                       <ScorelineTag scoreline={pick.scoreline} />
-                      <ResultTag result={pick.result || "pending"} />
+                      <ResultTag result={pick.result} />
                       <span className={`source-badge ${pick.source}`}>
                         {pick.source === "vip" ? "⭐ VIP" : "FREE"}
                       </span>
@@ -176,11 +227,11 @@ export default function History() {
       {/* Accumulators */}
       {viewTab === "accas" && (
         sortedAccas.length === 0 ? (
-          <p className="empty">No accumulators match this filter.</p>
+          <p className="empty">No settled accumulators yet.</p>
         ) : (
           <div className="history-list">
             {sortedAccas.map((acca) => {
-              const accaResult = acca.result || "pending";
+              const accaResult = deriveAccaResult(acca);
               return (
                 <div key={acca.id + acca.source} className={`history-row ${accaResult} acca-history-row`}>
                   <div className="acca-history-header">
