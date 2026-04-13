@@ -114,13 +114,10 @@ export default function History() {
     ? vipPicks
     : vipPicks.filter((p) => p.result && p.result !== "pending");
 
-  // Free users can see ALL vipAccas that are settled (derived result won/lost)
+  // Free users only see VIP accas where admin has explicitly set overall result to won/lost
   const visibleVipAccas = (isVip || isAdmin)
     ? vipAccas
-    : vipAccas.filter((a) => {
-        const r = deriveAccaResult(a);
-        return r === "won" || r === "lost";
-      });
+    : vipAccas.filter((a) => a.result === "won" || a.result === "lost");
 
   const allPicks = [
     ...freePicks.map((p) => ({ ...p, source: "free" })),
