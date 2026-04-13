@@ -33,10 +33,8 @@ function ScorelineTag({ scoreline }) {
 function SummaryBar({ picks, accas }) {
   const wonPicks = picks.filter((p) => p.result === "won").length;
   const lostPicks = picks.filter((p) => p.result === "lost").length;
-  const pendingPicks = picks.filter((p) => !p.result || p.result === "pending").length;
   const wonAccas = accas.filter((a) => a.result === "won").length;
   const lostAccas = accas.filter((a) => a.result === "lost").length;
-  const pendingAccas = accas.filter((a) => !a.result || a.result === "pending").length;
   const totalSettled = wonPicks + lostPicks;
   const winRate = totalSettled > 0 ? Math.round((wonPicks / totalSettled) * 100) : 0;
 
@@ -47,7 +45,6 @@ function SummaryBar({ picks, accas }) {
         <div className="summary-counts">
           <span className="summary-won">✓ {wonPicks} Won</span>
           <span className="summary-lost">✗ {lostPicks} Lost</span>
-          <span className="summary-pending">⏳ {pendingPicks} Pending</span>
         </div>
       </div>
       <div className="summary-divider" />
@@ -56,7 +53,6 @@ function SummaryBar({ picks, accas }) {
         <div className="summary-counts">
           <span className="summary-won">✓ {wonAccas} Won</span>
           <span className="summary-lost">✗ {lostAccas} Lost</span>
-          <span className="summary-pending">⏳ {pendingAccas} Pending</span>
         </div>
       </div>
       <div className="summary-divider" />
@@ -99,11 +95,13 @@ export default function History() {
 
   const filteredPicks = allPicks.filter((p) => {
     const r = p.result || "pending";
+    if (r === "pending") return false;
     return (filter === "all" || r === filter) && (source === "all" || p.source === source);
   });
 
   const filteredAccas = allAccas.filter((a) => {
     const r = a.result || "pending";
+    if (r === "pending") return false;
     return (filter === "all" || r === filter) && (source === "all" || a.source === source);
   });
 
@@ -114,7 +112,7 @@ export default function History() {
     <div className="page">
       <div className="page-header">
         <h2>Results</h2>
-        <p>All predictions — won, lost and pending. Free and VIP results visible to everyone.</p>
+        <p>Settled predictions — won and lost. Free and VIP results visible to everyone.</p>
       </div>
 
       <SummaryBar picks={allPicks} accas={allAccas} />
@@ -133,7 +131,6 @@ export default function History() {
           <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>All</button>
           <button className={filter === "won" ? "active" : ""} onClick={() => setFilter("won")}>Won</button>
           <button className={filter === "lost" ? "active" : ""} onClick={() => setFilter("lost")}>Lost</button>
-          <button className={filter === "pending" ? "active" : ""} onClick={() => setFilter("pending")}>Pending</button>
         </div>
         <div className="filter-group">
           <button className={source === "all" ? "active" : ""} onClick={() => setSource("all")}>All</button>
