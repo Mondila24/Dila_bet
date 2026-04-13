@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
-import StatsBar from "../components/StatsBar";
 
 const SPORT_ICONS = {
   football: "⚽", basketball: "🏀", tennis: "🎾", rugby: "🏉",
@@ -22,15 +21,54 @@ function ResultTag({ result }) {
     </span>
   );
 }
-
 function OddsTag({ odds }) {
   if (!odds) return null;
   return <span className="hist-odds-tag">@ {odds}</span>;
 }
-
 function ScorelineTag({ scoreline }) {
   if (!scoreline) return null;
   return <span className="hist-scoreline-tag">⚽ {scoreline}</span>;
+}
+
+function SummaryBar({ picks, accas }) {
+  const wonPicks = picks.filter((p) => p.result === "won").length;
+  const lostPicks = picks.filter((p) => p.result === "lost").length;
+  const pendingPicks = picks.filter((p) => !p.result || p.result === "pending").length;
+  const wonAccas = accas.filter((a) => a.result === "won").length;
+  const lostAccas = accas.filter((a) => a.result === "lost").length;
+  const pendingAccas = accas.filter((a) => !a.result || a.result === "pending").length;
+  const totalSettled = wonPicks + lostPicks;
+  const winRate = totalSettled > 0 ? Math.round((wonPicks / totalSettled) * 100) : 0;
+
+  return (
+    <div className="summary-bar">
+      <div className="summary-section">
+        <div className="summary-label">Single Picks</div>
+        <div className="summary-counts">
+          <span className="summary-won">✓ {wonPicks} Won</span>
+          <span className="summary-lost">✗ {lostPicks} Lost</span>
+          <span className="summary-pending">⏳ {pendingPicks} Pending</span>
+        </div>
+      </div>
+      <div className="summary-divider" />
+      <div className="summary-section">
+        <div className="summary-label">Accumulators</div>
+        <div className="summary-counts">
+          <span className="summary-won">✓ {wonAccas} Won</span>
+          <span className="summary-lost">✗ {lostAccas} Lost</span>
+          <span className="summary-pending">⏳ {pendingAccas} Pending</span>
+        </div>
+      </div>
+      <div className="summary-divider" />
+      <div className="summary-section">
+        <div className="summary-label">Win Rate</div>
+        <div className="summary-rate">{winRate}%</div>
+        <div className="win-rate-bar" style={{ marginTop: "6px" }}>
+          <div className="win-rate-fill" style={{ width: `${winRate}%` }} />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function History() {
@@ -40,46 +78,54 @@ export default function History() {
   const [source, setSource] = useState("all");
   const [viewTab, setViewTab] = useState("singles");
 
-  const visibleVipPicks = (isVip || isAdmin) ? vipPicks : vipPicks.filter((p) => p.result !== "pending");
-  const visibleVipAccas = (isVip || isAdmin) ? vipAccas : vipAccas.filter((a) => a.result && a.result !== "pending");
+  // Everyone sees settled VIP picks/accas — only pending VIP is hidden from non-VIP
+  const visibleVipPicks = (isVip || isAdmin)
+    ? vipPicks
+    : vipPicks.filter((p) => p.result && p.result !== "pending");
 
-  // Singles — show ALL (pending + settled)
+  const visibleVipAccas = (isVip || isAdmin)
+    ? vipAccas
+    : vipAccas.filter((a) => a.result && a.result !== "pending");
+
   const allPicks = [
     ...freePicks.map((p) => ({ ...p, source: "free" })),
     ...visibleVipPicks.map((p) => ({ ...p, source: "vip" })),
   ];
-  const filteredPicks = allPicks.filter((p) => {
-    const matchFilter = filter === "all" || p.result === filter;
-    const matchSource = source === "all" || p.source === source;
-    return matchFilter && matchSource;
-  });
-  const sortedPicks = [...filteredPicks].sort((a, b) => b.createdAt - a.createdAt);
 
-  // Accas — show ALL
   const allAccas = [
     ...freeAccas.map((a) => ({ ...a, source: "free" })),
     ...visibleVipAccas.map((a) => ({ ...a, source: "vip" })),
   ];
-  const filteredAccas = allAccas.filter((a) => {
-    const result = a.result || "pending";
-    const matchFilter = filter === "all" || result === filter;
-    const matchSource = source === "all" || a.source === source;
-    return matchFilter && matchSource;
+
+  const filteredPicks = allPicks.filter((p) => {
+    const r = p.result || "pending";
+    return (filter === "all" || r === filter) && (source === "all" || p.source === source);
   });
+
+  const filteredAccas = allAccas.filter((a) => {
+    const r = a.result || "pending";
+    return (filter === "all" || r === filter) && (source === "all" || a.source === source);
+  });
+
+  const sortedPicks = [...filteredPicks].sort((a, b) => b.createdAt - a.createdAt);
   const sortedAccas = [...filteredAccas].sort((a, b) => b.createdAt - a.createdAt);
 
   return (
     <div className="page">
       <div className="page-header">
         <h2>Results</h2>
-        <p>All predictions — won, lost and pending.</p>
+        <p>All predictions — won, lost and pending. Free and VIP results visible to everyone.</p>
       </div>
 
-      <StatsBar picks={allPicks} />
+      <SummaryBar picks={allPicks} accas={allAccas} />
 
       <div className="admin-tabs" style={{ marginBottom: "20px" }}>
-        <button className={viewTab === "singles" ? "active" : ""} onClick={() => setViewTab("singles")}>Single Picks</button>
-        <button className={viewTab === "accas" ? "active" : ""} onClick={() => setViewTab("accas")}>Accumulators</button>
+        <button className={viewTab === "singles" ? "active" : ""} onClick={() => setViewTab("singles")}>
+          Single Picks
+        </button>
+        <button className={viewTab === "accas" ? "active" : ""} onClick={() => setViewTab("accas")}>
+          Accumulators
+        </button>
       </div>
 
       <div className="history-filters">
@@ -99,7 +145,7 @@ export default function History() {
       {/* Singles */}
       {viewTab === "singles" && (
         sortedPicks.length === 0 ? (
-          <p className="empty">No picks yet.</p>
+          <p className="empty">No picks match this filter.</p>
         ) : (
           <div className="history-list">
             {sortedPicks.map((pick) => (
@@ -133,7 +179,7 @@ export default function History() {
       {/* Accumulators */}
       {viewTab === "accas" && (
         sortedAccas.length === 0 ? (
-          <p className="empty">No accumulators yet.</p>
+          <p className="empty">No accumulators match this filter.</p>
         ) : (
           <div className="history-list">
             {sortedAccas.map((acca) => {
@@ -155,30 +201,26 @@ export default function History() {
                       </div>
                     </div>
                   </div>
-
                   <div className="acca-history-picks">
-                    {acca.picks?.map((pick, i) => {
-                      const pickResult = pick.result || "pending";
-                      return (
-                        <div key={i} className="acca-history-pick">
-                          <span className="acca-pick-sport">{SPORT_ICONS[pick.sport] || "🏅"}</span>
-                          <div className="acca-pick-details" style={{ flex: 1 }}>
-                            <span className="acca-pick-match">{pick.match}</span>
-                            <span className="acca-pick-meta">
-                              {pick.country && <span>{pick.country}</span>}
-                              {pick.league && <span> · {pick.league}</span>}
-                              {pick.time && <span> · 🕐 {pick.time}</span>}
-                            </span>
-                            <div className="history-tags" style={{ marginTop: "5px" }}>
-                              <span className="history-tip-tag">{pick.tip}</span>
-                              <OddsTag odds={pick.odds} />
-                              <ScorelineTag scoreline={pick.scoreline} />
-                              <ResultTag result={pickResult} />
-                            </div>
+                    {acca.picks?.map((pick, i) => (
+                      <div key={i} className="acca-history-pick">
+                        <span className="acca-pick-sport">{SPORT_ICONS[pick.sport] || "🏅"}</span>
+                        <div className="acca-pick-details" style={{ flex: 1 }}>
+                          <span className="acca-pick-match">{pick.match}</span>
+                          <span className="acca-pick-meta">
+                            {pick.country && <span>{pick.country}</span>}
+                            {pick.league && <span> · {pick.league}</span>}
+                            {pick.time && <span> · 🕐 {pick.time}</span>}
+                          </span>
+                          <div className="history-tags" style={{ marginTop: "5px" }}>
+                            <span className="history-tip-tag">{pick.tip}</span>
+                            <OddsTag odds={pick.odds} />
+                            <ScorelineTag scoreline={pick.scoreline} />
+                            <ResultTag result={pick.result || "pending"} />
                           </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 </div>
               );

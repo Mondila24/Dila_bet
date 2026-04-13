@@ -1,6 +1,5 @@
 import PredictionCard from "../components/PredictionCard";
 import AccumulatorCard from "../components/AccumulatorCard";
-import StatsBar from "../components/StatsBar";
 import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -57,41 +56,46 @@ export default function VIPPicks({ onLoginClick }) {
         <p>Exclusive high-value tips for subscribers.</p>
       </div>
 
-      <StatsBar picks={vipPicks} />
-
-      {vipAccas.length > 0 && (
-        <div className="section">
-          <h3 className="section-title">Accumulators ({vipAccas.length})</h3>
-          <div className="acca-list">
-            {vipAccas.map((acca) => (
-              <AccumulatorCard
-                key={acca.id}
-                acca={acca}
-                isAdmin={isAdmin}
-                onDelete={(id) => deleteAcca("vip", id)}
-                onResult={(id, result) => updateAccaResult("vip", id, result)}
-                onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("vip", id, idx, result, scoreline)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="section">
-        {vipAccas.length > 0 && <h3 className="section-title">Single Picks</h3>}
-        <div className="cards-grid">
-          {vipPicks.length === 0 && <p className="empty">No VIP picks posted yet. Check back soon.</p>}
-          {vipPicks.map((pick) => (
-            <PredictionCard
-              key={pick.id}
-              pick={pick}
-              isAdmin={isAdmin}
-              onDelete={(id) => deletePick("vip", id)}
-              onResult={(id, result, scoreline) => updateResult("vip", id, result, scoreline)}
-            />
-          ))}
-        </div>
-      </div>
+      {(() => {
+        const pendingAccas = vipAccas.filter((a) => !a.result || a.result === "pending");
+        const pendingPicks = vipPicks.filter((p) => !p.result || p.result === "pending");
+        return (
+          <>
+            {pendingAccas.length > 0 && (
+              <div className="section">
+                <h3 className="section-title">Accumulators ({pendingAccas.length})</h3>
+                <div className="acca-list">
+                  {pendingAccas.map((acca) => (
+                    <AccumulatorCard
+                      key={acca.id}
+                      acca={acca}
+                      isAdmin={isAdmin}
+                      onDelete={(id) => deleteAcca("vip", id)}
+                      onResult={(id, result) => updateAccaResult("vip", id, result)}
+                      onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("vip", id, idx, result, scoreline)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="section">
+              {pendingAccas.length > 0 && <h3 className="section-title">Single Picks</h3>}
+              <div className="cards-grid">
+                {pendingPicks.length === 0 && <p className="empty">No VIP picks posted yet. Check back soon.</p>}
+                {pendingPicks.map((pick) => (
+                  <PredictionCard
+                    key={pick.id}
+                    pick={pick}
+                    isAdmin={isAdmin}
+                    onDelete={(id) => deletePick("vip", id)}
+                    onResult={(id, result, scoreline) => updateResult("vip", id, result, scoreline)}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 }

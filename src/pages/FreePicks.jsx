@@ -1,12 +1,15 @@
 import PredictionCard from "../components/PredictionCard";
 import AccumulatorCard from "../components/AccumulatorCard";
-import StatsBar from "../components/StatsBar";
 import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function FreePicks() {
   const { freePicks, freeAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
   const { isAdmin } = useAuth();
+
+  // Only show pending picks on this page — settled ones move to History
+  const pendingPicks = freePicks.filter((p) => !p.result || p.result === "pending");
+  const pendingAccas = freeAccas.filter((a) => !a.result || a.result === "pending");
 
   return (
     <div className="page">
@@ -15,13 +18,11 @@ export default function FreePicks() {
         <p>Today's free tips — available to everyone.</p>
       </div>
 
-      <StatsBar picks={freePicks} />
-
-      {freeAccas.length > 0 && (
+      {pendingAccas.length > 0 && (
         <div className="section">
-          <h3 className="section-title">Accumulators ({freeAccas.length})</h3>
+          <h3 className="section-title">Accumulators ({pendingAccas.length})</h3>
           <div className="acca-list">
-            {freeAccas.map((acca) => (
+            {pendingAccas.map((acca) => (
               <AccumulatorCard
                 key={acca.id}
                 acca={acca}
@@ -36,10 +37,10 @@ export default function FreePicks() {
       )}
 
       <div className="section">
-        {freeAccas.length > 0 && <h3 className="section-title">Single Picks</h3>}
+        {pendingAccas.length > 0 && <h3 className="section-title">Single Picks</h3>}
         <div className="cards-grid">
-          {freePicks.length === 0 && <p className="empty">No free picks posted yet. Check back soon.</p>}
-          {freePicks.map((pick) => (
+          {pendingPicks.length === 0 && <p className="empty">No free picks posted yet. Check back soon.</p>}
+          {pendingPicks.map((pick) => (
             <PredictionCard
               key={pick.id}
               pick={pick}
