@@ -257,7 +257,11 @@ export default function History({ onRebet }) {
                     )}
                   </div>
                   <div className="acca-history-picks">
-                    {acca.picks?.map((pick, i) => (
+                    {[...(acca.picks || [])].sort((a, b) => {
+                      const aStr = `${a.date || "9999-12-31"} ${a.time || "23:59"}`;
+                      const bStr = `${b.date || "9999-12-31"} ${b.time || "23:59"}`;
+                      return aStr.localeCompare(bStr);
+                    }).map((pick, i) => (
                       <div key={i} className="acca-history-pick">
                         <span className="acca-pick-sport">{SPORT_ICONS[pick.sport] || "🏅"}</span>
                         <div className="acca-pick-details" style={{ flex: 1 }}>

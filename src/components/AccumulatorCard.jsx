@@ -11,6 +11,15 @@ const RESULT_STYLES = {
   pending: { label: "⏳ PENDING", color: "#fbbf24", bg: "rgba(251,191,36,0.1)",  border: "rgba(251,191,36,0.25)" },
 };
 
+// Sort picks inside an acca by date + time ascending
+function sortPicks(picks) {
+  return [...(picks || [])].sort((a, b) => {
+    const aStr = `${a.date || "9999-12-31"} ${a.time || "23:59"}`;
+    const bStr = `${b.date || "9999-12-31"} ${b.time || "23:59"}`;
+    return aStr.localeCompare(bStr);
+  });
+}
+
 export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult, onRebet, isAdmin }) {
   const [copied, setCopied] = useState("");
   const [pickEdits, setPickEdits] = useState(() =>
@@ -57,7 +66,7 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
 
       {/* Picks */}
       <div className="acca-picks">
-        {(acca.picks || []).map((pick, i) => {
+        {sortPicks(acca.picks).map((pick, i) => {
           const pickResult = pick.result || "pending";
           const ps = RESULT_STYLES[pickResult];
           return (
