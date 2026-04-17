@@ -150,7 +150,6 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
             <option value="won">Overall: Won</option>
             <option value="lost">Overall: Lost</option>
           </select>
-          <button className="btn-outline small" onClick={() => onRebet && onRebet(acca)}>♻️ Rebet</button>
           <button className="btn-delete" onClick={() => onDelete(acca.id)}>Delete</button>
         </div>
       )}

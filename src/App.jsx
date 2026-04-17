@@ -70,7 +70,7 @@ function AppInner() {
         {page === "free" && <FreePicks onRebet={handleRebet} />}
         {page === "vip" && <VIPPicks onLoginClick={() => setShowAuth(true)} onRebet={handleRebet} />}
         {page === "admin" && <Admin setPage={navigate} rebetData={rebetData} onRebetUsed={() => setRebetData(null)} />}
-        {page === "history" && <History />}
+        {page === "history" && <History onRebet={handleRebet} />}
       </main>
 
       <footer className="footer">

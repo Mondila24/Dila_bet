@@ -102,7 +102,7 @@ function SummaryBar({ freePicks, vipPicks, freeAccas, vipAccas }) {
   );
 }
 
-export default function History() {
+export default function History({ onRebet }) {
   const { freePicks, vipPicks, freeAccas, vipAccas } = usePredictions();
   const { isVip, isAdmin } = useAuth();
   const [filter, setFilter] = useState("all");
@@ -246,6 +246,15 @@ export default function History() {
                         </div>
                       </div>
                     </div>
+                    {isAdmin && (
+                      <button
+                        className="btn-outline small"
+                        style={{ whiteSpace: "nowrap", alignSelf: "flex-start" }}
+                        onClick={() => onRebet && onRebet(acca)}
+                      >
+                        ♻️ Rebet
+                      </button>
+                    )}
                   </div>
                   <div className="acca-history-picks">
                     {acca.picks?.map((pick, i) => (
