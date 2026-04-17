@@ -2,6 +2,7 @@ import PredictionCard from "../components/PredictionCard";
 import AccumulatorCard from "../components/AccumulatorCard";
 import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
+import { sortByKickoff, sortAccasByKickoff } from "../utils/sortByKickoff";
 
 export default function VIPPicks({ onLoginClick }) {
   const { vipPicks, vipAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
@@ -57,8 +58,8 @@ export default function VIPPicks({ onLoginClick }) {
       </div>
 
       {(() => {
-        const pendingAccas = vipAccas.filter((a) => !a.result || a.result === "pending");
-        const pendingPicks = vipPicks.filter((p) => !p.result || p.result === "pending");
+        const pendingAccas = sortAccasByKickoff(vipAccas.filter((a) => !a.result || a.result === "pending"));
+        const pendingPicks = sortByKickoff(vipPicks.filter((p) => !p.result || p.result === "pending"));
         return (
           <>
             {pendingAccas.length > 0 && (

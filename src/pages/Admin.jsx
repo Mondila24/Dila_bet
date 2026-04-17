@@ -6,8 +6,8 @@ import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { teamsBySport, leaguesBySport, countriesBySport } from "../data/teams";
 import AutocompleteInput from "../components/AutocompleteInput";
 
-const empty = { match: "", league: "", country: "", sport: "football", time: "", tip: "", odds: "", scoreline: "" };
-const emptyAccaPick = { match: "", tip: "", league: "", country: "", time: "", sport: "football", scoreline: "", odds: "" };
+const empty = { match: "", league: "", country: "", sport: "football", date: "", time: "", tip: "", odds: "", scoreline: "" };
+const emptyAccaPick = { match: "", tip: "", league: "", country: "", date: "", time: "", sport: "football", scoreline: "", odds: "" };
 const emptyAcca = { picks: [{ ...emptyAccaPick }], totalOdds: "", sportybetCode: "", footballComCode: "", result: "pending" };
 
 function MatchInput({ value, sport, onChange }) {
@@ -193,6 +193,10 @@ export default function Admin({ setPage }) {
                   />
                 </div>
                 <div className="form-row">
+                  <label>Date</label>
+                  <input name="date" type="date" value={form.date} onChange={handleChange} />
+                </div>
+                <div className="form-row">
                   <label>Kickoff Time</label>
                   <input name="time" placeholder="e.g. 20:00" value={form.time} onChange={handleChange} />
                 </div>
@@ -256,6 +260,14 @@ export default function Admin({ setPage }) {
                         onChange={(val) => handleAccaPickChange(i, "country", val)}
                         suggestions={countriesBySport[pick.sport] || []}
                         placeholder="e.g. England"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Date</label>
+                      <input
+                        type="date"
+                        value={pick.date || ""}
+                        onChange={(e) => handleAccaPickChange(i, "date", e.target.value)}
                       />
                     </div>
                     <div className="form-row">

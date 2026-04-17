@@ -202,6 +202,7 @@ export default function History() {
                     <div className="history-meta">
                       {pick.country && <span>{pick.country}</span>}
                       {pick.league && <span> · {pick.league}</span>}
+                      {pick.date && <span> · 📅 {new Date(pick.date).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })}</span>}
                       {pick.time && <span> · 🕐 {pick.time}</span>}
                     </div>
                     <div className="history-tags">
@@ -255,6 +256,7 @@ export default function History() {
                           <span className="acca-pick-meta">
                             {pick.country && <span>{pick.country}</span>}
                             {pick.league && <span> · {pick.league}</span>}
+                            {pick.date && <span> · 📅 {new Date(pick.date).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })}</span>}
                             {pick.time && <span> · 🕐 {pick.time}</span>}
                           </span>
                           <div className="history-tags" style={{ marginTop: "5px" }}>

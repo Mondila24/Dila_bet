@@ -69,6 +69,7 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
                   <span className="acca-pick-meta">
                     {pick.country && <span>{pick.country}</span>}
                     {pick.league && <span> · {pick.league}</span>}
+                    {pick.date && <span> · {new Date(pick.date).toLocaleDateString("en-GB", { day:"2-digit", month:"short" })}</span>}
                     {pick.time && <span> · 🕐 {pick.time}</span>}
                   </span>
                   {/* Tags row — always visible */}

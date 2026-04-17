@@ -2,14 +2,14 @@ import PredictionCard from "../components/PredictionCard";
 import AccumulatorCard from "../components/AccumulatorCard";
 import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
+import { sortByKickoff, sortAccasByKickoff } from "../utils/sortByKickoff";
 
 export default function FreePicks() {
   const { freePicks, freeAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
   const { isAdmin } = useAuth();
 
-  // Only show pending picks on this page — settled ones move to History
-  const pendingPicks = freePicks.filter((p) => !p.result || p.result === "pending");
-  const pendingAccas = freeAccas.filter((a) => !a.result || a.result === "pending");
+  const pendingPicks = sortByKickoff(freePicks.filter((p) => !p.result || p.result === "pending"));
+  const pendingAccas = sortAccasByKickoff(freeAccas.filter((a) => !a.result || a.result === "pending"));
 
   return (
     <div className="page">

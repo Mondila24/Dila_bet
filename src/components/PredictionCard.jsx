@@ -28,7 +28,10 @@ export default function PredictionCard({ pick, onDelete, onResult, isAdmin }) {
     <div className="pred-card">
       <div className="pred-header">
         <span className="pred-league">{sportIcon} {pick.league}</span>
-        <span className="pred-time">🕐 {pick.time}</span>
+        <span className="pred-time">
+          {pick.date && <span>{new Date(pick.date).toLocaleDateString("en-GB", { day:"2-digit", month:"short" })} · </span>}
+          🕐 {pick.time}
+        </span>
       </div>
       <h3 className="pred-match">{pick.match}</h3>
       <div className="pred-meta-row">
