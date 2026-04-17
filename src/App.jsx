@@ -12,19 +12,40 @@ import "./App.css";
 
 function AppInner() {
   const [page, setPage] = useState("home");
+  const [history, setHistory] = useState([]);
   const [showAuth, setShowAuth] = useState(false);
+
+  const navigate = (newPage) => {
+    setHistory((prev) => [...prev, page]);
+    setPage(newPage);
+  };
+
+  const goBack = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    setHistory((h) => h.slice(0, -1));
+    setPage(prev);
+  };
 
   return (
     <div className="app-wrap">
-      <Navbar page={page} setPage={setPage} onLoginClick={() => setShowAuth(true)} />
+      <Navbar page={page} setPage={navigate} onLoginClick={() => setShowAuth(true)} />
 
       {showAuth && <AuthPage onClose={() => setShowAuth(false)} />}
 
       <main>
-        {page === "home" && <Home setPage={setPage} onLoginClick={() => setShowAuth(true)} />}
+        {page !== "home" && (
+          <button className="back-btn" onClick={goBack}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="18" height="18">
+              <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Back
+          </button>
+        )}
+        {page === "home" && <Home setPage={navigate} onLoginClick={() => setShowAuth(true)} />}
         {page === "free" && <FreePicks />}
         {page === "vip" && <VIPPicks onLoginClick={() => setShowAuth(true)} />}
-        {page === "admin" && <Admin setPage={setPage} />}
+        {page === "admin" && <Admin setPage={navigate} />}
         {page === "history" && <History />}
       </main>
 
