@@ -75,7 +75,7 @@ const SPORTS = [
   { value: "other", label: "🏅 Other" },
 ];
 
-export default function Admin({ setPage }) {
+export default function Admin({ setPage, rebetData, onRebetUsed }) {
   const { addPick, addAcca } = usePredictions();
   const { logout } = useAuth();
   const [type, setType] = useState("free");
@@ -86,6 +86,16 @@ export default function Admin({ setPage }) {
   const [users, setUsers] = useState([]);
   const [tab, setTab] = useState("picks");
   const [pickTab, setPickTab] = useState("single");
+
+  // Pre-fill acca form if rebet data is passed
+  useEffect(() => {
+    if (rebetData) {
+      setAccaForm(rebetData);
+      setTab("picks");
+      setPickTab("acca");
+      onRebetUsed && onRebetUsed();
+    }
+  }, [rebetData]);
 
   const loadUsers = async () => {
     const snap = await getDocs(collection(db, "users"));

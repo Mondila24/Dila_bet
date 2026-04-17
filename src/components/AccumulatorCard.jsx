@@ -11,7 +11,7 @@ const RESULT_STYLES = {
   pending: { label: "⏳ PENDING", color: "#fbbf24", bg: "rgba(251,191,36,0.1)",  border: "rgba(251,191,36,0.25)" },
 };
 
-export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult, isAdmin }) {
+export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult, onRebet, isAdmin }) {
   const [copied, setCopied] = useState("");
   const [pickEdits, setPickEdits] = useState(() =>
     (acca.picks || []).map((p) => ({ result: p.result || "pending", scoreline: p.scoreline || "" }))
@@ -150,6 +150,7 @@ export default function AccumulatorCard({ acca, onDelete, onResult, onPickResult
             <option value="won">Overall: Won</option>
             <option value="lost">Overall: Lost</option>
           </select>
+          <button className="btn-outline small" onClick={() => onRebet && onRebet(acca)}>♻️ Rebet</button>
           <button className="btn-delete" onClick={() => onDelete(acca.id)}>Delete</button>
         </div>
       )}

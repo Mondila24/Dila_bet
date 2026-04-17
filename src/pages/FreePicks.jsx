@@ -4,7 +4,7 @@ import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 import { sortByKickoff, sortAccasByKickoff } from "../utils/sortByKickoff";
 
-export default function FreePicks() {
+export default function FreePicks({ onRebet }) {
   const { freePicks, freeAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
   const { isAdmin } = useAuth();
 
@@ -30,6 +30,7 @@ export default function FreePicks() {
                 onDelete={(id) => deleteAcca("free", id)}
                 onResult={(id, result) => updateAccaResult("free", id, result)}
                 onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("free", id, idx, result, scoreline)}
+                onRebet={onRebet}
               />
             ))}
           </div>

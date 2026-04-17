@@ -14,10 +14,34 @@ function AppInner() {
   const [page, setPage] = useState("home");
   const [history, setHistory] = useState([]);
   const [showAuth, setShowAuth] = useState(false);
+  const [rebetData, setRebetData] = useState(null);
 
   const navigate = (newPage) => {
     setHistory((prev) => [...prev, page]);
     setPage(newPage);
+  };
+
+  const handleRebet = (acca) => {
+    // Strip result/scoreline fields, reset to pending for new ticket
+    const freshPicks = (acca.picks || []).map((p) => ({
+      match: p.match || "",
+      tip: p.tip || "",
+      league: p.league || "",
+      country: p.country || "",
+      date: p.date || "",
+      time: p.time || "",
+      sport: p.sport || "football",
+      odds: p.odds || "",
+      scoreline: "",
+    }));
+    setRebetData({
+      picks: freshPicks,
+      totalOdds: "",
+      sportybetCode: "",
+      footballComCode: "",
+      result: "pending",
+    });
+    navigate("admin");
   };
 
   const goBack = () => {
@@ -43,9 +67,9 @@ function AppInner() {
           </button>
         )}
         {page === "home" && <Home setPage={navigate} onLoginClick={() => setShowAuth(true)} />}
-        {page === "free" && <FreePicks />}
-        {page === "vip" && <VIPPicks onLoginClick={() => setShowAuth(true)} />}
-        {page === "admin" && <Admin setPage={navigate} />}
+        {page === "free" && <FreePicks onRebet={handleRebet} />}
+        {page === "vip" && <VIPPicks onLoginClick={() => setShowAuth(true)} onRebet={handleRebet} />}
+        {page === "admin" && <Admin setPage={navigate} rebetData={rebetData} onRebetUsed={() => setRebetData(null)} />}
         {page === "history" && <History />}
       </main>
 

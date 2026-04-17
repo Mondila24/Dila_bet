@@ -4,7 +4,7 @@ import { usePredictions } from "../context/PredictionsContext";
 import { useAuth } from "../context/AuthContext";
 import { sortByKickoff, sortAccasByKickoff } from "../utils/sortByKickoff";
 
-export default function VIPPicks({ onLoginClick }) {
+export default function VIPPicks({ onLoginClick, onRebet }) {
   const { vipPicks, vipAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
   const { user, isVip, isAdmin } = useAuth();
 
@@ -74,6 +74,7 @@ export default function VIPPicks({ onLoginClick }) {
                       onDelete={(id) => deleteAcca("vip", id)}
                       onResult={(id, result) => updateAccaResult("vip", id, result)}
                       onPickResult={(id, idx, result, scoreline) => updateAccaPickResult("vip", id, idx, result, scoreline)}
+                      onRebet={onRebet}
                     />
                   ))}
                 </div>
