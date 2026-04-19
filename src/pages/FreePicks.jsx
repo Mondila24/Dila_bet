@@ -8,8 +8,10 @@ export default function FreePicks({ onRebet }) {
   const { freePicks, freeAccas, deletePick, updateResult, deleteAcca, updateAccaResult, updateAccaPickResult } = usePredictions();
   const { isAdmin } = useAuth();
 
+  // Acca stays on picks page until ALL picks have a decided result
+  const allPicksDecided = (acca) => (acca.picks || []).every((p) => p.result === "won" || p.result === "lost");
   const pendingPicks = sortByKickoff(freePicks.filter((p) => !p.result || p.result === "pending"));
-  const pendingAccas = sortAccasByKickoff(freeAccas.filter((a) => !a.result || a.result === "pending"));
+  const pendingAccas = sortAccasByKickoff(freeAccas.filter((a) => !allPicksDecided(a)));
 
   return (
     <div className="page">

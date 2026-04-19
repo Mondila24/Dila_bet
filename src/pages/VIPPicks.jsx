@@ -58,7 +58,8 @@ export default function VIPPicks({ onLoginClick, onRebet }) {
       </div>
 
       {(() => {
-        const pendingAccas = sortAccasByKickoff(vipAccas.filter((a) => !a.result || a.result === "pending"));
+        const allPicksDecided = (acca) => (acca.picks || []).every((p) => p.result === "won" || p.result === "lost");
+        const pendingAccas = sortAccasByKickoff(vipAccas.filter((a) => !allPicksDecided(a)));
         const pendingPicks = sortByKickoff(vipPicks.filter((p) => !p.result || p.result === "pending"));
         return (
           <>

@@ -103,7 +103,7 @@ function SummaryBar({ freePicks, vipPicks, freeAccas, vipAccas }) {
 }
 
 export default function History({ onRebet }) {
-  const { freePicks, vipPicks, freeAccas, vipAccas } = usePredictions();
+  const { freePicks, vipPicks, freeAccas, vipAccas, deletePick, deleteAcca } = usePredictions();
   const { isVip, isAdmin } = useAuth();
   const [filter, setFilter] = useState("all");
   const [source, setSource] = useState("all");
@@ -216,6 +216,11 @@ export default function History({ onRebet }) {
                     </div>
                   </div>
                 </div>
+                {isAdmin && (
+                  <button className="btn-delete" style={{ alignSelf: "flex-start", marginTop: "4px" }} onClick={() => deletePick(pick.source, pick.id)}>
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -247,13 +252,21 @@ export default function History({ onRebet }) {
                       </div>
                     </div>
                     {isAdmin && (
-                      <button
-                        className="btn-outline small"
-                        style={{ whiteSpace: "nowrap", alignSelf: "flex-start" }}
-                        onClick={() => onRebet && onRebet(acca)}
-                      >
-                        ♻️ Rebet
-                      </button>
+                      <div style={{ display: "flex", gap: "8px", alignSelf: "flex-start" }}>
+                        <button
+                          className="btn-outline small"
+                          style={{ whiteSpace: "nowrap" }}
+                          onClick={() => onRebet && onRebet(acca)}
+                        >
+                          ♻️ Rebet
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => deleteAcca(acca.source, acca.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     )}
                   </div>
                   <div className="acca-history-picks">
